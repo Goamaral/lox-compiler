@@ -1,12 +1,7 @@
-#include <sysexits.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <errno.h>
-#include <string.h>
+#include "main.h"
+#include "token.h"
 
-void runFile(const char *file_path);
-void runPrompt();
-void run(const char *command);
+bool hadError = false;
 
 int main(int argc, char *argv[]) {
   if (argc > 2) {
@@ -20,8 +15,8 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-void runFile(const char *file_path) {
-  FILE *file = fopen(file_path, "r");
+void runFile(const char *filePath) {
+  FILE *file = fopen(filePath, "r");
   if (file == NULL) {
     printf("Failed to open file: %s\n", strerror(errno));
     return;
@@ -34,7 +29,9 @@ void runFile(const char *file_path) {
       return;
     }
 
-    printf("%s", line);
+    // run(command);
+
+    if (hadError) exit(EX_DATAERR);
   }
 
   fclose(file);
@@ -45,15 +42,24 @@ void runPrompt() {
   for (;;) {
     printf("> ");
     if (fgets(command, 1024, stdin) == NULL) {
-      // TODO: printf("Failed to get input: %s\n", strerror(errno));
+      if (errno != EX_OK) printf("Failed to get input: %s\n", strerror(errno));
       return;
     }
-    command[strlen(command)-1] = '\0'; // Remove new line
+    command[strlen(command) - 1] = '\0';  // Remove new line
 
     run(command);
+
+    hadError = false;
   }
 }
 
 void run(const char *command) {
+  // TODO: Read tokens
+}
 
+void error(int line, const char *message) { report(line, "", message); }
+
+void report(int line, const char *where, const char *message) {
+  printf("[line %d] Error%s: %s", line, where, message);
+  hadError = true;
 }
