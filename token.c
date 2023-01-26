@@ -5,6 +5,6 @@ Token NewToken(TokenType type, char *lexeme, char *literal, int line) {
   return tok;
 }
 
-int TokenToString(Token tok, char *dst) {
+int Token_ToString(Token tok, char *dst) {
   return sprintf(dst, "%s %s %s", tok.type, tok.lexeme, tok.literal);
 }

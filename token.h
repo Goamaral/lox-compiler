@@ -1,7 +1,11 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
+#include <stdio.h>
+
 typedef enum {
+  TokenType_UNDEFINED,
+
   // Single-character tokens.
   TokenType_LPAR,
   TokenType_RPAR,
@@ -56,9 +60,10 @@ typedef struct {
   char* lexeme;
   char* literal;
   int line;
+  int col;
 } Token;
 
 Token NewToken(TokenType type, char *lexeme, char *literal, int line);
-int TokenToString(Token tok, char *dst);
+int Token_ToString(Token tok, char *dst);
 
 #endif
